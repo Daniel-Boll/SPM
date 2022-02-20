@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 
@@ -9,5 +9,10 @@ export class TenantsController {
   @Post()
   create(@Body() createTenantDto: CreateTenantDto) {
     return this.tenantsService.create(createTenantDto);
+  }
+
+  @Get('validate/:tenantId')
+  async validate(@Param('tenantId') tenantId: string) {
+    return this.tenantsService.validate(tenantId.toLowerCase());
   }
 }
