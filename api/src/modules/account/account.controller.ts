@@ -8,6 +8,7 @@ import { ActivateAccountDto } from './dto/activate-account.dto';
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
+  // TODO: Extract domain from the request hostname.
   @Post('/activate/:domain')
   async activate(
     @Param('domain') domain: string,
