@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
@@ -64,14 +69,12 @@ export class TenantsService {
     return await this.tenantModel.findOne({ subdomain }).exec();
   }
 
-  async validate(name: string): Promise<Tenant> {
-    const tenant = await this.tenantModel.find({ name }).exec();
+  async validate(subdomain: string): Promise<Tenant> {
+    const tenant = await this.tenantModel.find({ subdomain }).exec();
 
-    if (tenant.length === 0) {
-      throw new Error('Tenant not found');
-    }
+    if (tenant.length === 0) throw new NotFoundException('Tenant not found');
 
-    return tenant.length > 0 ? tenant[0] : null;
+    return tenant[0];
   }
 
   async activate(domain: string): Promise<Tenant> {

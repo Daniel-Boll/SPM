@@ -22,11 +22,16 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const contextID = ContextIdFactory.getByRequest(request);
     const authService = await this.moduleRef.resolve(AuthService, contextID);
 
+    console.log(email, password);
+    console.log(email.length, password.length);
+
     const user = await authService.validateUser({
       email,
       password,
       fromJwt: false,
     });
+
+    console.log(user);
 
     if (!user) throw new UnauthorizedException();
 
