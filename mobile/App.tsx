@@ -1,21 +1,20 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import StackNavigator from "./src/StackNavigator";
+import { IconRegistry } from "@ui-kitten/components";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import React from "react";
+import { AppNavigator } from "./src/components/navigation.component";
+import { ToastProvider } from "react-native-toast-notifications";
+import { ThemeProvider } from "./src/contexts/theme.context";
+import "./src/utils/string";
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <StackNavigator />
-    </NavigationContainer>
-  );
-}
+const App = () => (
+  <>
+    <IconRegistry icons={EvaIconsPack} />
+    <ThemeProvider>
+      <ToastProvider>
+        <AppNavigator />
+      </ToastProvider>
+    </ThemeProvider>
+  </>
+);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+export default App;
