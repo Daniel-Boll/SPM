@@ -43,7 +43,7 @@ export const LandingScreen = ({ navigation }: any): JSX.Element => {
   };
 
   const onSignUpButtonPress = (): void => {
-    console.log("Sign Up");
+    navigation.navigate("Register");
   };
 
   return (
