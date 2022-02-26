@@ -27,9 +27,8 @@ export const LandingScreen = ({ navigation }: any): JSX.Element => {
     const response = await api({
       method: "get",
       resource: `tenants/validate/${domain}`,
-    }).catch((err) => {
-      console.log(err);
-      toast.update(id, "There's no domain with that name", { type: "danger" });
+    }).catch(({ response: { data } }) => {
+      toast.update(id, data.message, { type: "danger" });
       return null;
     });
 

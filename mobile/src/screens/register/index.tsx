@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
 import {
-  Button,
-  Input,
-  Layout,
-  StyleService,
-  Text,
-  useStyleSheet,
-  Icon,
+    Button, Icon, Input,
+    Layout,
+    StyleService,
+    Text,
+    useStyleSheet
 } from "@ui-kitten/components";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { useToast } from "react-native-toast-notifications";
 import { KeyboardAvoidingView } from "../../components/keyboard-avoiding-view.components";
 import { api } from "../../services/api.service";
-import { isBiometricSupported } from "../../utils/biometric-support";
-import { useToast } from "react-native-toast-notifications";
-import ReactNativeBiometrics from "react-native-biometrics";
 
 export const RegisterScreen = ({ navigation }: any): JSX.Element => {
   const [domain, setDomain] = useState<string>();
@@ -22,46 +18,33 @@ export const RegisterScreen = ({ navigation }: any): JSX.Element => {
   const styles = useStyleSheet(themedStyles);
   const toast = useToast();
 
-  useEffect(() => {
-    (async () => {
-      await isBiometricSupported();
-    })();
-  }, []);
-
   const onSignUpButtonPress = async () => {
-    const { success, error } = await ReactNativeBiometrics.simplePrompt({
-      promptMessage: "Sign in with Touch ID",
-      // cancelButtonText: 'Close',
+    const id = toast.show("Loading...", {
+      duration: 5000,
+      onPress: (id) => toast.hide(id),
     });
 
-    console.log(success, error);
+    const response = await api({
+      method: "post",
+      resource: "tenants",
+      data: {
+        subdomain: domain.sanitize(),
+        ownerEmail: email.sanitize(),
+        name: `${domain} tenant`,
+      },
+    }).catch((err) => {
+      console.log(err);
+      toast.update(id, "The domain is already taken", { type: "danger" });
+      return null;
+    });
 
-    // const id = toast.show("Loading...", {
-    //   duration: 5000,
-    //   onPress: (id) => toast.hide(id),
-    // });
-    //
-    // const response = await api({
-    //   method: "post",
-    //   resource: "tenants",
-    //   data: {
-    //     subdomain: domain.sanitize(),
-    //     ownerEmail: email.sanitize(),
-    //     name: `${domain} tenant`,
-    //   },
-    // }).catch((err) => {
-    //   console.log(err);
-    //   toast.update(id, "The domain is already taken", { type: "danger" });
-    //   return null;
-    // });
-    //
-    // if (!response) return;
-    //
-    // console.log(response);
-    //
-    // toast.update(id, "You will shortly receive an e-mail", { type: "success" });
-    //
-    // navigation.navigate("Landing");
+    if (!response) return;
+
+    console.log(response);
+
+    toast.update(id, "You will shortly receive an e-mail", { type: "success" });
+
+    navigation.navigate("Landing");
   };
 
   const onSignInButtonPress = (): void => {
