@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
@@ -27,7 +28,10 @@ export class TenantsService {
   ): Promise<Tenant & { _id: any }> {
     let createdTenant;
     try {
-      createdTenant = await this.tenantModel.create(createTenantDto);
+      createdTenant = await this.tenantModel.create({
+        ...createTenantDto,
+        active: false,
+      });
     } catch (err) {
       this.logger.error(err);
       const error =
@@ -73,6 +77,8 @@ export class TenantsService {
     const tenant = await this.tenantModel.find({ subdomain }).exec();
 
     if (tenant.length === 0) throw new NotFoundException('Tenant not found');
+    if (tenant[0].active === false)
+      throw new UnauthorizedException('Tenant not activated');
 
     return tenant[0];
   }
