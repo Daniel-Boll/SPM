@@ -1,8 +1,7 @@
 import React from 'react';
-import { Button, Icon, List, ListItem } from '@ui-kitten/components';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { Button, Icon, List, ListItem, Divider } from '@ui-kitten/components';
+import { StyleSheet } from 'react-native';
 
-const {width, height} = Dimensions.get("window");
 
 // Interface para ambos folder e password
 // NOTE: futuramente dividir para ListItemFolder e ListItemPassword
@@ -28,12 +27,6 @@ const DeleteIcon = (props) => (
   <Icon {...props} name='trash-outline' />
 );
 
-
-const ListButton = (props: IListButton) => {
-  const {onClick, iconName, buttonStatus} = props;
-  return <Button onPress={onClick} status={buttonStatus}>{}</Button>
-}
-
 const ListItemRender = (props: IListItem) => {
   const { item: {title, description, onClickEdit, onClickDelete, onClickNavigate} } = props;
   return <ListItem
@@ -41,22 +34,21 @@ const ListItemRender = (props: IListItem) => {
     title={`${title}`}
     description={`${description}`}
     onPress={onClickNavigate}
-    accessoryLeft={() => <Button onPress={onClickEdit} status="primary" >Edit</Button>}
-    accessoryRight={() => <Button onPress={onClickDelete} status="danger">Delete</Button>}
+    accessoryLeft={() => <Button onPress={onClickEdit} status="primary" accessoryLeft={EditIcon}/>}
+    accessoryRight={() => <Button onPress={onClickDelete} status="danger" accessoryLeft={DeleteIcon}/>}
   />
 }
 
-export const FlatList = (props) => {
-  const {data} = props  
+export const FolderList = (props) => {
+  const {data} = props;
 
   return (
-    <View style={{ width, height}}>
-      <List
-        style={styles.container}
-        data={data}
-        renderItem={ListItemRender}
-      />
-    </View>
+    <List
+      style={styles.container}
+      data={data}
+      renderItem={ListItemRender}
+      ItemSeparatorComponent={Divider}
+    />
   );
 };
 

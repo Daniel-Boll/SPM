@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, Divider, Layout, TopNavigation, TopNavigationAction, Icon, useTheme} from "@ui-kitten/components";
+import { SafeAreaView, StyleSheet, View} from "react-native";
+import { Button, Divider, Layout, TopNavigation, TopNavigationAction, Icon, useTheme, useStyleSheet, StyleService, Text} from "@ui-kitten/components";
 import { useTheme as useContextTheme } from "../../contexts/theme.context";
-import { FlatList } from "../../components/FlatList";
+import { FolderList } from "../../components/FolderList";
 
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back' />
@@ -27,6 +27,8 @@ export const HomeScreen = ({ navigation }: any) => {
 
   const [folders, setFolders] = useState<[IFolder]>([]);
 
+  const styles = useStyleSheet(themedStyles);
+
   const handleDelete = () => {
       console.log("deleted")
   }
@@ -47,7 +49,7 @@ export const HomeScreen = ({ navigation }: any) => {
     <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
   );
 
-  const ThemeAction = (currTheme) => (
+  const ThemeAction = () => (
     <TopNavigationAction icon={currTheme === "dark" ? LightIcon : DarkIcon} onPress={toggleTheme}/>
   );
 
@@ -63,10 +65,22 @@ export const HomeScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNavigation title='NSPM' subtitle="Folders" alignment='center' accessoryLeft={BackAction} accessoryRight={() => ThemeAction(currTheme)}/>
+      <View style={styles.headerContainer}>
+        <Text category="h1" status="control">
+          Folders
+        </Text>
+        <Text style={styles.label} category="s1" status="control">
+          Here are all your saved folders
+        </Text>
+      </View>
+
       <Divider />
-      <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-         <FlatList data={folders.map(folder => {
+
+      <TopNavigation title="" subtitle="" alignment='center' accessoryLeft={BackAction} accessoryRight={ThemeAction}/>
+      <Divider />
+
+      <Layout style={styles.listContainer} level="1">
+         <FolderList data={folders.map(folder => {
            const fns = {onClickNavigate: handleClickFolder, onClickDelete: handleDelete, onClickEdit: handleEdit};
            return {...folder, ...fns};
          })}/>
@@ -76,13 +90,25 @@ export const HomeScreen = ({ navigation }: any) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container:{
+const themedStyles = StyleService.create({
+  container: {
+    backgroundColor: "background-basic-color-1",
     flex:1
   },
-  layout:{
-    flex: 1,
+  headerContainer: {
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    minHeight: 200,
+    backgroundColor: "color-primary-default",
+  },
+  listContainer: {
+    flex: 1,
+    flexGrow:1,
+    paddingTop: 32,
+    paddingHorizontal: 16,
+    justifyContent: "center"
+  },
+  label: {
+    marginTop: 16,
   },
 });
