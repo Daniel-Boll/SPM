@@ -1461,6 +1461,13 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.11.tgz#2f4c6e10bee0786abff4604e39a37ded6f3980ce"
   integrity sha512-rQfMIGSR/1r/SyN87+VD8xHHzDYeHaJq6elOSCAD+0iLagXkSI2pfA0LmSXP21uw5i3em7GkkRjfJ8wpqWXZNw==
 
+"@react-native-cookies/cookies@^6.0.11":
+  version "6.0.11"
+  resolved "https://registry.yarnpkg.com/@react-native-cookies/cookies/-/cookies-6.0.11.tgz#94e2ef88e20d4370f2b69be37d274aa30a089c6c"
+  integrity sha512-FuRelau9wly5Neitnb5EZKiScnkNZgKydMyDxVsY4t7tOWRfNh0uiL7tiEI4jp2lD3ntAvicwzZB6L+NGYuuAQ==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"
@@ -5516,6 +5523,11 @@ react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-native-biometrics@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/react-native-biometrics/-/react-native-biometrics-2.1.4.tgz#e201e9f18baeb560eeaba8d41fbd4f90d04152fe"
+  integrity sha512-Ek7NmzgHB4rot2DdzV9Q3pzxFjnEFipGSFsmWZw5vcM9vkMoebhz8d8UYgsp0efroyeLITDNHwcFGEzq8XW9Kg==
 
 react-native-codegen@*:
   version "0.0.13"

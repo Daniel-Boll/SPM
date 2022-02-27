@@ -41,7 +41,7 @@ export const LoginScreen = ({ navigation, route }): React.ReactElement => {
       },
     }).catch((err) => {
       console.log(err);
-      toast.update(id, "Error logging in");
+      toast.update(id, "Error logging in", { type: "danger" });
       return null;
     });
 

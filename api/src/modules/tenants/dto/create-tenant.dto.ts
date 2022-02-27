@@ -1,6 +1,6 @@
 export class CreateTenantDto {
   subdomain: string;
   name: string;
-  active: boolean;
+  active?: boolean;
   ownerEmail: string;
 }

@@ -6,6 +6,7 @@ import { SandboxScreen } from "../screens/sandbox.screen";
 import { LandingScreen } from "../screens/landing";
 import { LoginScreen } from "../screens/login";
 import { HomeScreen } from "../screens/home";
+import { RegisterScreen } from "../screens/register";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -19,6 +20,7 @@ const HomeNavigator = () => (
     <Screen name="Home" component={HomeScreen} />
     <Screen name="Landing" component={LandingScreen} />
     <Screen name="Login" component={LoginScreen} />
+    <Screen name="Register" component={RegisterScreen} />
   </Navigator>
 );
 
