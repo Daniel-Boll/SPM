@@ -64,13 +64,15 @@ export const FolderList = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
   container: {
     flex:1,
+    backgroundColor: "background-basic-color-1",
   },
   item: {
     paddingHorizontal: 8,
-    paddingVertical: 8
+    paddingVertical: 8,
+    backgroundColor: "background-basic-color-1",
   }
 });
 

@@ -25,7 +25,15 @@ export class FolderController {
   @UseGuards(JwtAuthGuard)
   @Get(':name')
   async findOne(@Param('name') name: string) {
-    return await this.folderService.find({name});
+    const folder = await this.folderService.findOne(name);
+    console.log(folder);
+    return folder;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':name')
+  async update(@Param('name') name: string, @Body() updateFolderDto: UpdateFolderDto) {
+    return this.folderService.update(name, updateFolderDto);
   }
 
   @UseGuards(JwtAuthGuard)

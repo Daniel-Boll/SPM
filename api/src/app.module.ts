@@ -8,7 +8,7 @@ import { TenantsValidator } from './modules/tenants/tenants.validator';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { AccountModule } from './modules/account/account.module';
-
+import { FolderModule } from "./modules/folder/folder.module";
 import configuration from './configuration/config';
 
 const configModule = ConfigModule.forRoot({
@@ -49,6 +49,7 @@ const tenancyModule = TenancyModule.forRootAsync({
     AuthModule,
     UserModule,
     AccountModule,
+    FolderModule
   ],
   controllers: [AppController],
 })

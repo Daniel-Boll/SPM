@@ -1,9 +1,10 @@
 import { InjectTenancyModel } from '@needle-innovision/nestjs-tenancy';
-import { Injectable, Scope } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Folder } from './entities/folder.entity';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable({ scope: Scope.REQUEST })
 export class FolderService {
@@ -13,11 +14,35 @@ export class FolderService {
   ) {}
 
   async create(createFolderDto: CreateFolderDto): Promise<Folder> {
-    return this.folderModel.create(createFolderDto);
+    try {
+      const createdFolder = await this.folderModel.create(createFolderDto);
+      return createdFolder;
+    } catch (err) {
+      const error =
+        err.code === 11000
+          ? new ConflictException('Folder already exists')
+          : new Error('Error creating Folder');
+
+      throw error;
+    }
   }
 
-  async findAll(): Promise<Folder[]> {
-    return await this.folderModel.find().exec();
+  async findAll(): Promise<any> {
+    const folders = await this.folderModel.find().exec();
+    return folders.map(folder => {
+      const {name, description} = folder;
+      return {name, description};
+    });
+  }
+
+  async findOne(name): Promise<any> {
+    try {
+      const folder = await this.folderModel.findOne({name});
+      if (!folder) throw new NotFoundException("Folder not Found");
+      return folder;
+    } catch(error) {
+      throw error;
+    }
   }
 
   async find(match: { [type: string]: string }): Promise<Folder> {
@@ -26,17 +51,22 @@ export class FolderService {
 
   async update(name: string, updateFolderDto: UpdateFolderDto) {
     try {
-      await this.folderModel.findOneAndUpdate({ name }, updateFolderDto).exec();
-      return { status: 'ok' };
-    } catch (err) {
-      return { status: 'error', message: err.message };
+      const updatedFolder = await this.folderModel.findOneAndUpdate({ name }, updateFolderDto);
+      if (!updatedFolder) throw new NotFoundException("Folder not Found");
+      return updatedFolder;
+    } catch (error) {
+      throw error;
     }
   }
 
   async remove(name: string) {
-    const folder = await this.folderModel.findOneAndDelete({name}).exec();
-
-    return folder;
+    try{
+      const folder = await this.folderModel.findOneAndDelete({name}).exec();
+      if (!folder) throw new NotFoundException("Folder not found");
+      return folder;
+    } catch (error) {
+      throw error;
+    }
   }
 
 }

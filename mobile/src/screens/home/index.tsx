@@ -25,7 +25,7 @@ const LightIcon = (props) => (
 
 
 interface IFolder {
-    title: string;
+    name: string;
     description: string;
 }
 
@@ -34,7 +34,7 @@ export const HomeScreen = ({ navigation }: any) => {
   const theme = useTheme();
   const toast = useToast();
 
-  const [folders, setFolders] = useState<[IFolder]>([]);
+  const [folders, setFolders] = useState<IFolder[]>([]);
 
   const styles = useStyleSheet(themedStyles);
 
@@ -61,7 +61,28 @@ export const HomeScreen = ({ navigation }: any) => {
 
     if (!response) return;
 
+    setFolders(folders.filter(({name}) => name !== folderName));
+
     toast.update(id, "Folder Deleted!", { type: "success" });
+  }
+
+  const getFolders = async () => {
+    const id = toast.show("Loading...", {
+      duration: 5000,
+      onPress: (id) => toast.hide(id),
+    });
+
+    const response = await api({
+      method: "get",
+      resource: `folder`,
+    }).catch((err) => {
+      console.log(err);
+      toast.update(id, "Cannot get folders", { type: "danger" });
+      return [];
+    });
+
+    toast.update(id, "Folder Deleted!", { type: "success" });
+    return response;
   }
 
   const handleEdit = (folder) => {
@@ -95,7 +116,7 @@ export const HomeScreen = ({ navigation }: any) => {
 
   // NOTE: fix when auth is done
   useEffect(() => {
-    setFolders(data);
+    getFolders().then(setFolders);
   },[])
 
   return (
@@ -114,7 +135,6 @@ export const HomeScreen = ({ navigation }: any) => {
       <Divider />
 
       <TopNavigation title="" subtitle="" alignment='center' accessoryLeft={BackAction} accessoryRight={ThemeAction}/>
-      <Divider />
 
       <Layout style={styles.listContainer} level="1">
          <FolderList data={folders.map(folder => {
@@ -144,7 +164,8 @@ const themedStyles = StyleService.create({
     flexGrow:1,
     paddingVertical: 8,
     paddingHorizontal: 8,
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: "background-basic-color-1",
   },
   title: {
     paddingTop: 16,
