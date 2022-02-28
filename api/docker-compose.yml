@@ -41,6 +41,11 @@ services:
     networks:
       - nspm
 
+  redis:
+    image: redis:6.2.6-alpine3.14
+    networks:
+      - nspm
+
 networks:
   nspm:
     name: nspm

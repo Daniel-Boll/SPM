@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Tenant, TenantSchema } from './entities/tenant.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'src/configuration/constants';
+import { QueueModule } from '../queue/queue.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { jwtConstants } from 'src/configuration/constants';
     JwtModule.register({
       secret: jwtConstants.accessTokenSecret,
     }),
+    QueueModule,
   ],
   controllers: [TenantsController],
   providers: [TenantsService, TenantsValidator],

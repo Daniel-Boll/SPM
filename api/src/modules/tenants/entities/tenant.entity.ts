@@ -7,7 +7,7 @@ export class Tenant extends Document {
   subdomain: string;
   @Prop({ required: true })
   ownerEmail: string;
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   name: string;
   @Prop({ required: true })
   active: boolean;

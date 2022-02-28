@@ -1,27 +1,27 @@
-import React, { ReactElement } from "react";
-import { View, TouchableWithoutFeedback } from "react-native";
 import {
   Button,
+  Icon,
   Input,
   Layout,
   StyleService,
   Text,
   useStyleSheet,
-  Icon,
 } from "@ui-kitten/components";
+import React, { useState } from "react";
+import { TouchableWithoutFeedback, View } from "react-native";
+import { useToast } from "react-native-toast-notifications";
 import { KeyboardAvoidingView } from "../../components/keyboard-avoiding-view.components";
 import { api } from "../../services/api.service";
-import { useToast } from "react-native-toast-notifications";
 
-export const LoginScreen = ({ navigation, route }): React.ReactElement => {
+export const ConfirmationScreen = ({ navigation, route }: any): JSX.Element => {
   const domain = route.params?.domain?.toLowerCase();
+  const styles = useStyleSheet(themedStyles);
   const toast = useToast();
 
-  const [email, setEmail] = React.useState<string>();
-  const [password, setPassword] = React.useState<string>();
-  const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
+  const [name, setName] = useState<string>("");
 
-  const styles = useStyleSheet(themedStyles);
+  const [password, setPassword] = useState<string>("");
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   const onSignInButtonPress = async () => {
     const id = toast.show("Loading...", {
@@ -30,39 +30,39 @@ export const LoginScreen = ({ navigation, route }): React.ReactElement => {
     });
 
     const response = await api({
-      resource: "auth/login",
+      resource: `account/activate/${domain}`,
       method: "post",
       data: {
-        email: email?.sanitize(),
-        password,
+        user: {
+          name,
+          masterPassword: password,
+        },
       },
       scoped: {
         domain,
       },
     }).catch((err) => {
       console.log(err);
-      toast.update(id, "Error logging in", { type: "danger" });
+      toast.update(id, "Error activating your account, try again later", { type: "danger" });
       return null;
     });
 
     if (!response) return;
 
-    toast.update(id, "Logged in", { type: "success" });
+    toast.update(id, "Activated!", { type: "success" });
 
     const { data } = response;
 
-    navigation.navigate("Home");
-  };
-
-  const onForgotPasswordButtonPress = (): void => {
-    navigation && navigation.navigate("ForgotPassword");
+    navigation.navigate("Login", {
+      domain,
+    });
   };
 
   const onPasswordIconPress = (): void => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const renderPasswordIcon = (props): ReactElement => (
+  const renderPasswordIcon = (props: any) => (
     <TouchableWithoutFeedback onPress={onPasswordIconPress}>
       <Icon {...props} name={passwordVisible ? "eye-off" : "eye"} />
     </TouchableWithoutFeedback>
@@ -71,41 +71,34 @@ export const LoginScreen = ({ navigation, route }): React.ReactElement => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text category="h1" status="control">
-          {domain.toTitleCase()}
+        <Text category="h2" status="control">
+          Welcome to NSPM 🔑
         </Text>
         <Text style={styles.signInLabel} category="s1" status="control">
-          Sign in to your account
+          Confirm your account ({domain})
         </Text>
       </View>
       <Layout style={styles.formContainer} level="1">
         <Input
-          placeholder="Email"
-          accessoryRight={<Icon name="email-outline" />}
-          value={email}
-          onChangeText={setEmail}
+          placeholder="Name"
+          accessoryRight={<Icon name="person" />}
+          value={name}
+          onChangeText={setName}
         />
         <Input
-          style={styles.passwordInput}
+          style={styles.input}
           placeholder="Password"
           accessoryRight={renderPasswordIcon}
           value={password}
           secureTextEntry={!passwordVisible}
           onChangeText={setPassword}
         />
-        <View style={styles.forgotPasswordContainer}>
-          <Button
-            style={styles.forgotPasswordButton}
-            appearance="ghost"
-            status="basic"
-            onPress={onForgotPasswordButtonPress}>
-            Forgot your password?
-          </Button>
-        </View>
       </Layout>
-      <Button style={styles.signInButton} size="giant" onPress={onSignInButtonPress}>
-        SIGN IN
-      </Button>
+      <View style={styles.buttonContainer}>
+        <Button style={styles.signInButton} onPress={onSignInButtonPress} size="giant">
+          BEGIN
+        </Button>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -117,35 +110,31 @@ const themedStyles = StyleService.create({
   headerContainer: {
     justifyContent: "center",
     alignItems: "center",
-    minHeight: 216,
     backgroundColor: "color-primary-default",
+    minHeight: 216,
   },
   formContainer: {
     flex: 1,
+    justifyContent: "center",
     paddingTop: 32,
     paddingHorizontal: 16,
+    width: "100%",
   },
   signInLabel: {
     marginTop: 16,
   },
   signInButton: {
-    marginHorizontal: 16,
-    marginBottom: 12,
-  },
-  signUpButton: {
     marginVertical: 12,
     marginHorizontal: 16,
+    backgroundColor: "color-success-600",
   },
-  forgotPasswordContainer: {
-    flexDirection: "row",
+  buttonContainer: {
+    flexDirection: "column",
     justifyContent: "flex-end",
   },
-  passwordInput: {
+  input: {
+    height: 40,
+    marginBottom: 16,
     marginTop: 16,
   },
-  forgotPasswordButton: {
-    paddingHorizontal: 0,
-  },
 });
-
-export default LoginScreen;
