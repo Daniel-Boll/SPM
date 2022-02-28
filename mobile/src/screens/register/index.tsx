@@ -1,15 +1,18 @@
 import {
-    Button, Icon, Input,
-    Layout,
-    StyleService,
-    Text,
-    useStyleSheet
+  Button,
+  Icon,
+  Input,
+  Layout,
+  StyleService,
+  Text,
+  useStyleSheet,
 } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import { KeyboardAvoidingView } from "../../components/keyboard-avoiding-view.components";
 import { api } from "../../services/api.service";
+import { createURL } from "expo-linking";
 
 export const RegisterScreen = ({ navigation }: any): JSX.Element => {
   const [domain, setDomain] = useState<string>();
@@ -24,6 +27,8 @@ export const RegisterScreen = ({ navigation }: any): JSX.Element => {
       onPress: (id) => toast.hide(id),
     });
 
+    const redirectURL = createURL(`${domain}/account/confirm`);
+
     const response = await api({
       method: "post",
       resource: "tenants",
@@ -31,7 +36,9 @@ export const RegisterScreen = ({ navigation }: any): JSX.Element => {
         subdomain: domain.sanitize(),
         ownerEmail: email.sanitize(),
         name: `${domain} tenant`,
+        callback: redirectURL,
       },
+      // callbackUrl:
     }).catch((err) => {
       console.log(err);
       toast.update(id, "The domain is already taken", { type: "danger" });
