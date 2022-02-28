@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView, StyleSheet, View} from "react-native";
-import { Button, Divider, Layout, TopNavigation, TopNavigationAction, Icon, useTheme, useStyleSheet, StyleService, Text} from "@ui-kitten/components";
+import { Button, Divider, Layout, TopNavigation, TopNavigationAction, Icon, useTheme, useStyleSheet, StyleService, Text, Card} from "@ui-kitten/components";
 import { useTheme as useContextTheme } from "../../contexts/theme.context";
 import { FolderList } from "../../components/FolderList";
 import { useConfirm } from "react-native-confirm-dialog";
 import { api } from "../../services/api.service";
 import { useToast } from "react-native-toast-notifications";
+
 
 const AddIcon = (props) => (
   <Icon {...props} name='plus-square-outline' />
@@ -23,7 +24,6 @@ const LightIcon = (props) => (
   <Icon {...props} name='sun-outline' />
 );
 
-
 interface IFolder {
     name: string;
     description: string;
@@ -33,6 +33,7 @@ export const HomeScreen = ({ navigation }: any) => {
   const { theme: currTheme, toggleTheme } = useContextTheme();
   const theme = useTheme();
   const toast = useToast();
+  const shakeIconRef = useRef();
 
   const [folders, setFolders] = useState<IFolder[]>([]);
 
@@ -62,8 +63,6 @@ export const HomeScreen = ({ navigation }: any) => {
     if (!response) return;
 
     setFolders(folders.filter(({name}) => name !== folderName));
-
-    toast.update(id, "Folder Deleted!", { type: "success" });
   }
 
   const getFolders = async () => {
@@ -81,7 +80,6 @@ export const HomeScreen = ({ navigation }: any) => {
       return [];
     });
 
-    toast.update(id, "Folder Deleted!", { type: "success" });
     return response;
   }
 
@@ -109,6 +107,10 @@ export const HomeScreen = ({ navigation }: any) => {
     <TopNavigationAction icon={currTheme === "dark" ? LightIcon : DarkIcon} onPress={toggleTheme}/>
   );
 
+  const NotFoundIcon = (props) => (
+    <Icon {...props} ref={shakeIconRef} animation="shake" name='minus-circle-outline' />
+  );
+
   const data: [IFolder] = new Array(50).fill({
     name: 'Title for Item',
     description: 'Description for Item',
@@ -117,6 +119,7 @@ export const HomeScreen = ({ navigation }: any) => {
   // NOTE: fix when auth is done
   useEffect(() => {
     getFolders().then(setFolders);
+    // setFolders(data);
   },[])
 
   return (
@@ -137,10 +140,22 @@ export const HomeScreen = ({ navigation }: any) => {
       <TopNavigation title="" subtitle="" alignment='center' accessoryLeft={BackAction} accessoryRight={ThemeAction}/>
 
       <Layout style={styles.listContainer} level="1">
+         {
+           folders.length !== 0 ?
          <FolderList data={folders.map(folder => {
            const fns = {onClickNavigate: handleClick, onClickDelete:() => handleDelete(folder.name), onClickEdit: () => handleEdit(folder)};
            return {...folder, ...fns};
-         })}/>
+         })}/> :
+
+         <Button
+           appearance='ghost'
+           status='danger'
+           style={styles.button}
+           accessoryLeft={NotFoundIcon}
+           onPress={() => shakeIconRef.current.startAnimation()}>
+         SHAKE
+         </Button>
+         }
       </Layout>
       <Divider />
       <Button onPress={handleAdd} style={styles.addButton} accessoryLeft={AddIcon} size="giant" status="success"/>
@@ -165,6 +180,7 @@ const themedStyles = StyleService.create({
     paddingVertical: 8,
     paddingHorizontal: 8,
     justifyContent: "center",
+    flexDirection: "column",
     backgroundColor: "background-basic-color-1",
   },
   title: {
@@ -174,8 +190,6 @@ const themedStyles = StyleService.create({
     paddingTop: 16,
   },
   addButton: {
-    position: "absolute",
-    bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
     width: 70,
@@ -184,5 +198,11 @@ const themedStyles = StyleService.create({
     right: 10,
     height: 70,
     borderRadius: 100,
-  }
+  },
+  card: {
+    margin: 64,
+  },
+  button: {
+    margin:64,
+  },
 });
