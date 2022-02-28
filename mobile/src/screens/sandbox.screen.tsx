@@ -3,43 +3,26 @@ import { SafeAreaView } from "react-native";
 import { Button, Divider, Layout, TopNavigation, useTheme } from "@ui-kitten/components";
 import { useTheme as useContextTheme } from "../contexts/theme.context";
 import * as Linking from "expo-linking";
+import { api } from "../services/api.service";
 
 export const SandboxScreen = ({ navigation }: any) => {
   const { toggleTheme } = useContextTheme();
   const theme = useTheme();
 
-  // const handleRedirect = (event: any) => {
-  //   const { url } = event;
-  //   const data = Linking.parse(url);
-  //   const { path } = data;
-  //
-  //   console.log(data);
-  //   console.log(path);
-  //
-  //   if (!path) return;
-  //
-  //   const [domain, ...resources] = path.split("/");
-  //   const resource: string = resources.join("/");
-  //
-  //   console.log(domain, resource);
-  //
-  //   const paths = {
-  //     "account/confirm": (domain: string) => navigation.navigate("Confirmation", { domain }),
-  //   };
-  //
-  //   const availableResources = Object.keys(paths);
-  //
-  //   if (availableResources.includes(resource)) {
-  //     paths[resource](domain);
-  //   }
-  // };
-  //
-  // useEffect(() => {
-  //   Linking.addEventListener("url", handleRedirect);
-  //   Linking.getInitialURL().then((value) => {
-  //     if (value) handleRedirect({ url: value });
-  //   });
-  // }, []);
+  const onToggleTheme = async () => {
+    await api({
+      method: "post",
+      resource: "account/create/user",
+      data: {
+        name: "John Doe2",
+        email: "jh@jh.com2",
+        masterPassword: "123456",
+      },
+      scoped: {
+        domain: "teste",
+      },
+    });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -57,7 +40,7 @@ export const SandboxScreen = ({ navigation }: any) => {
         <Button onPress={() => navigation.navigate("Confirmation")}>Confirmation</Button>
         <Button
           style={{ marginVertical: 4, backgroundColor: theme["color-primary-default"] }}
-          onPress={toggleTheme}>
+          onPress={onToggleTheme}>
           TOGGLE THEME
         </Button>
       </Layout>

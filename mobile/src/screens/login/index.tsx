@@ -49,8 +49,6 @@ export const LoginScreen = ({ navigation, route }): React.ReactElement => {
 
     toast.update(id, "Logged in", { type: "success" });
 
-    const { data } = response;
-
     navigation.navigate("Home");
   };
 
