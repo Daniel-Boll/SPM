@@ -153,7 +153,7 @@ export const HomeScreen = ({ navigation }: any) => {
            style={styles.button}
            accessoryLeft={NotFoundIcon}
            onPress={() => shakeIconRef.current.startAnimation()}>
-         SHAKE
+         No Folders Found
          </Button>
          }
       </Layout>
