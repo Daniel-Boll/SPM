@@ -1,22 +1,6 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import Constants from "expo-constants";
 
-// NOTE: We might enhance the API "look" to something like this:
-//
-// await api.get("/users/:id", {
-//     data
-//  }, {
-//     customHeaders
-//  })
-//
-// await api.post("/users/:id", {
-//     data
-//  }, {
-//     customHeaders
-//  }).auth(domain)
-//
-//  Might look cleaner
-
 interface IApi {
   method: "get" | "post" | "put" | "delete" | "patch";
   resource: string;
