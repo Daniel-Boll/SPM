@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Icon, List, ListItem, Divider } from '@ui-kitten/components';
+import { Button, Icon, List, ListItem, Divider, StyleService, useStyleSheet } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
+import {useConfirm} from "react-native-confirm-dialog";
 
 
 // Interface para ambos folder e password
@@ -19,6 +20,17 @@ interface IListButton {
   buttonStatus: string
 }
 
+const ConfirmableButton = (props) => {
+  const {onPress} = props;
+  const styles = useStyleSheet(dialogStyles);
+  const confirm = useConfirm();
+  const handlePress = () => {
+    confirm({theme:styles.confirmDialog, onConfirm: onPress, cancelButtonStyle: styles.cancelDialog, cancelButtonLabelStyle: styles.cancelDialogLabel});
+  }
+  
+  return <Button {...props} onPress={ handlePress } />
+}
+
 const EditIcon = (props) => (
   <Icon {...props} name='edit-outline' />
 );
@@ -28,14 +40,14 @@ const DeleteIcon = (props) => (
 );
 
 const ListItemRender = (props: IListItem) => {
-  const { item: {title, description, onClickEdit, onClickDelete, onClickNavigate} } = props;
+  const { item: {name, description, onClickEdit, onClickDelete, onClickNavigate} } = props;
   return <ListItem
     style={styles.item}
-    title={`${title}`}
+    title={`${name}`}
     description={`${description}`}
     onPress={onClickNavigate}
     accessoryLeft={() => <Button onPress={onClickEdit} status="primary" accessoryLeft={EditIcon}/>}
-    accessoryRight={() => <Button onPress={onClickDelete} status="danger" accessoryLeft={DeleteIcon}/>}
+    accessoryRight={() => <ConfirmableButton onPress={onClickDelete} status="danger" accessoryLeft={DeleteIcon}/>}
   />
 }
 
@@ -59,5 +71,18 @@ const styles = StyleSheet.create({
   item: {
     paddingHorizontal: 8,
     paddingVertical: 8
+  }
+});
+
+const dialogStyles = StyleService.create({
+  confirmDialog: {
+    primaryColor: "color-primary-default"
+  },
+  cancelDialog: {
+    backgroundColor: "color-danger-default",
+    borderWidth:0
+  },
+  cancelDialogLabel: {
+    color: "color-basic-100",
   }
 });

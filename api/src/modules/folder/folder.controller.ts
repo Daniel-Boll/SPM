@@ -2,7 +2,6 @@ import { Body, Query, Param, Controller, Delete, Post, Get, Patch, HttpStatus, U
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
-import { DeleteFolderDto } from './dto/delete-folder.dto';
 import { FolderService } from './folder.service';
 
 @Controller('folder')
@@ -30,8 +29,8 @@ export class FolderController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':name')
-  update(@Param('name') name: string, @Body() updateFolderDto: UpdateFolderDto) {
-    return this.folderService.update(name, updateFolderDto);
+  @Delete(':name')
+  async delete(@Param('name') name: string) {
+    return this.folderService.remove(name);
   }
 }

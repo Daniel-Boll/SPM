@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { Folder } from './entities/folder.entity';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
-import { DeleteFolderDto } from './dto/delete-folder.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class FolderService {
@@ -35,7 +34,7 @@ export class FolderService {
   }
 
   async remove(name: string) {
-    const folder = await this.folderModel.findByIdAndRemove(name).exec();
+    const folder = await this.folderModel.findOneAndDelete({name}).exec();
 
     return folder;
   }

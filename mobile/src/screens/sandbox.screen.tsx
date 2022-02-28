@@ -14,6 +14,7 @@ export const SandboxScreen = ({ navigation }: any) => {
       <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Button onPress={() => navigation.navigate("Landing")}>Landing</Button>
         <Button style={{marginVertical:4}} onPress={() => navigation.navigate("Home")}>Home</Button>
+        <Button style={{marginVertical:4}} onPress={() => navigation.navigate("AddFolder")}>AddFolder</Button>
         <Button
           style={{ marginVertical: 4, backgroundColor: theme["color-primary-default"] }}
           onPress={toggleTheme}>

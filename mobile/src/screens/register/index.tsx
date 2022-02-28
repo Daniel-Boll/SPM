@@ -101,7 +101,7 @@ export const RegisterScreen = ({ navigation }: any): JSX.Element => {
 
 const themedStyles = StyleService.create({
   container: {
-    backgroundcolor: "background-basic-color-1",
+    backgroundColor: "background-basic-color-1",
   },
   headerContainer: {
     justifyContent: "center",
