@@ -7,9 +7,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomUUID } from 'crypto';
+import { randomBytes, randomUUID, scrypt } from 'crypto';
 import mongoose from 'mongoose';
 import { Model } from 'mongoose';
+import { promisify } from 'util';
 import { QueueService } from '../queue/queue.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { Tenant } from './entities/tenant.entity';
@@ -56,18 +57,23 @@ export class TenantsService {
         },
       );
 
-      await mongoClient.collection('account').insertOne({
-        subdomain: createdTenant.subdomain,
-        name: createdTenant.name,
-        secret: randomUUID(),
-      });
-
-      await mongoClient.close();
       await this.queueService.addConfirmationMail({
         email: createTenantDto.ownerEmail,
         tenant: createTenantDto.subdomain,
         callback: createTenantDto.callback,
       });
+
+      const salt = randomBytes(32);
+
+      const key = (await promisify(scrypt)(randomUUID(), salt, 32)) as Buffer;
+
+      await mongoClient.collection('accounts').insertOne({
+        subdomain: createdTenant.subdomain,
+        name: createdTenant.name,
+        secret: key,
+      });
+
+      await mongoClient.close();
     } catch (err) {
       this.logger.error(err);
       throw new Error('Error creating tenant');
