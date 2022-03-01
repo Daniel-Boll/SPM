@@ -8,7 +8,7 @@ import { TenantsValidator } from './modules/tenants/tenants.validator';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { AccountModule } from './modules/account/account.module';
-
+import { FolderModule } from "./modules/folder/folder.module";
 import configuration from './configuration/config';
 import { BullModule } from '@nestjs/bull';
 import { BullMonitorModule } from './modules/bull-monitor/bull-monitor.module';
@@ -60,6 +60,7 @@ const bullModule = BullModule.forRoot({
     AuthModule,
     UserModule,
     AccountModule,
+    FolderModule,
     BullMonitorModule,
     QueueModule,
   ],

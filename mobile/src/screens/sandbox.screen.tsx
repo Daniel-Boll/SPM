@@ -37,6 +37,7 @@ export const SandboxScreen = ({ navigation }: any) => {
       <Divider />
       <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Button onPress={() => navigation.navigate("Landing")}>Landing</Button>
+        <Button onPress={() => navigation.navigate("Home")}>Home</Button>
         <Button onPress={() => navigation.navigate("Confirmation")}>Confirmation</Button>
         <Button
           style={{ marginVertical: 4, backgroundColor: theme["color-primary-default"] }}

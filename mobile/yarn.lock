@@ -5584,6 +5584,11 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
+react-native-confirm-dialog@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-confirm-dialog/-/react-native-confirm-dialog-0.1.0.tgz#787b54e2d86a46081d3fef79ca188af5f4fa74db"
+  integrity sha512-NKtVdgiKpLgzFDPrwhqCmL6V8rRQAxigiJk/8H3/WB9UHCW7PDCZLcrgRM4IXdbK67rq31GvnQXgjKy528Er/g==
+
 react-native-eva-icons@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-eva-icons/-/react-native-eva-icons-1.3.1.tgz#1e6e019b0fd3cb1669db50bd6bbdaa6d89327593"

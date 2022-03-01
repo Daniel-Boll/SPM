@@ -49,7 +49,7 @@ export const LoginScreen = ({ navigation, route }): React.ReactElement => {
 
     toast.update(id, "Logged in", { type: "success" });
 
-    navigation.navigate("Home");
+    navigation.navigate("Home", { domain });
   };
 
   const onForgotPasswordButtonPress = (): void => {
