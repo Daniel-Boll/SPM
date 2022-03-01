@@ -28,7 +28,8 @@ const LightIcon = (props) => (
   <Icon {...props} name='sun-outline' />
 );
 
-export const AddFolderScreen = ({ navigation }: any): JSX.Element => {
+export const AddFolderScreen = ({ navigation, route }: any): JSX.Element => {
+  const {domain, refresh} = route.params;
   const [name, setName] = useState<string>();
   const [description, setDescription] = useState<string>();
 
@@ -51,11 +52,6 @@ export const AddFolderScreen = ({ navigation }: any): JSX.Element => {
   );
 
   const onSaveButtonPress = async () => {
-    const id = toast.show("Loading...", {
-      duration: 5000,
-      onPress: (id) => toast.hide(id),
-    });
-
     const response = await api({
       method: "post",
       resource: "folder",
@@ -63,19 +59,18 @@ export const AddFolderScreen = ({ navigation }: any): JSX.Element => {
         name: name.sanitize(),
         description: description.sanitize()
       },
+      scoped: {domain}
     }).catch((err) => {
       console.log(err);
       toast.update(id, "Cannot add the folder", { type: "danger" });
       return null;
     });
 
-    console.log(response);
-
     if (!response) return;
 
     toast.update(id, "Folder Added!", { type: "success" });
-
-    navigation.navigate("Home");
+    refresh();
+    navigation.goBack();
   };
 
   return (

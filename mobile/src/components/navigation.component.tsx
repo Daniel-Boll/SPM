@@ -7,8 +7,10 @@ import { LandingScreen } from "../screens/landing";
 import { LoginScreen } from "../screens/login";
 import { HomeScreen } from "../screens/home";
 import { RegisterScreen } from "../screens/register";
+import { ConfirmationScreen } from "../screens/confirmation";
 import { AddFolderScreen } from "../screens/add-folder";
 import { UpdateFolderScreen } from "../screens/update-folder";
+import * as Linking from "expo-linking";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -20,16 +22,42 @@ const HomeNavigator = () => (
     }}>
     <Screen name="Sandbox" component={SandboxScreen} />
     <Screen name="Home" component={HomeScreen} />
+    <Screen name="AddFolder" component={AddFolderScreen} />
+    <Screen name="UpdateFolder" component={UpdateFolderScreen} />
     <Screen name="Landing" component={LandingScreen} />
     <Screen name="Login" component={LoginScreen} />
     <Screen name="Register" component={RegisterScreen} />
-    <Screen name="AddFolder" component={AddFolderScreen} />
-    <Screen name="UpdateFolder" component={UpdateFolderScreen} />
+    <Screen name="Confirmation" component={ConfirmationScreen} />
   </Navigator>
 );
 
-export const AppNavigator = () => (
-  <NavigationContainer>
-    <HomeNavigator />
-  </NavigationContainer>
-);
+const prefix = Linking.createURL("/");
+
+export const AppNavigator = () => {
+  return (
+    <NavigationContainer
+      linking={{
+        prefixes: [prefix],
+        getInitialURL: async () => {
+          const url = await Linking.getInitialURL().then((url) => {
+            if (url) {
+              return url;
+            }
+            return prefix + "home";
+          });
+
+          console.log(url);
+          return url;
+        },
+        config: {
+          screens: {
+            Confirmation: {
+              path: ":domain/account/confirm",
+            },
+          },
+        },
+      }}>
+      <HomeNavigator />
+    </NavigationContainer>
+  );
+};

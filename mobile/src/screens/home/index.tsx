@@ -29,7 +29,8 @@ interface IFolder {
     description: string;
 }
 
-export const HomeScreen = ({ navigation }: any) => {
+export const HomeScreen = ({ navigation, route }: any) => {
+  const domain = route.params?.domain;
   const { theme: currTheme, toggleTheme } = useContextTheme();
   const theme = useTheme();
   const toast = useToast();
@@ -40,25 +41,18 @@ export const HomeScreen = ({ navigation }: any) => {
   const styles = useStyleSheet(themedStyles);
 
   const handleDelete = async (folderName) => {
-    console.log(folderName);
-    const id = toast.show("Loading...", {
-      duration: 5000,
-      onPress: (id) => toast.hide(id),
-    });
-
     const response = await api({
       method: "delete",
-      resource: `folder/${name.sanitize()}`,
+      resource: `folder/${folderName.sanitize()}`,
       data: {
         name: folderName.sanitize(),
       },
+      scoped: {domain}
     }).catch((err) => {
-      console.log(err);
+      console.log(err.response.data);
       toast.update(id, "Cannot delete folder", { type: "danger" });
       return null;
     });
-
-    console.log(response);
 
     if (!response) return;
 
@@ -66,29 +60,31 @@ export const HomeScreen = ({ navigation }: any) => {
   }
 
   const getFolders = async () => {
+    console.log("adçlmaçsdmaçdm");
     const id = toast.show("Loading...", {
-      duration: 5000,
+      duration: 1000,
       onPress: (id) => toast.hide(id),
     });
 
     const response = await api({
       method: "get",
-      resource: `folder`,
+      resource: "folder",
+      scoped: {domain}
     }).catch((err) => {
-      console.log(err);
+      console.log(err.response.data);
       toast.update(id, "Cannot get folders", { type: "danger" });
       return [];
     });
 
-    return response;
+    return response.data;
   }
 
   const handleEdit = (folder) => {
-    navigation.navigate("UpdateFolder", {folder});
+    navigation.navigate("UpdateFolder", {folder, domain, refresh: () => getFolders().then(setFolders)});
   }
 
   const handleAdd = () => {
-    navigation.navigate("AddFolder");
+    navigation.navigate("AddFolder", {domain, refresh: () => getFolders().then(setFolders)});
   }
 
   const handleClick = () => {
@@ -116,10 +112,8 @@ export const HomeScreen = ({ navigation }: any) => {
     description: 'Description for Item',
   });
 
-  // NOTE: fix when auth is done
   useEffect(() => {
     getFolders().then(setFolders);
-    // setFolders(data);
   },[])
 
   return (
@@ -141,9 +135,9 @@ export const HomeScreen = ({ navigation }: any) => {
 
       <Layout style={styles.listContainer} level="1">
          {
-           folders.length !== 0 ?
+           folders && folders.length !== 0 ?
          <FolderList data={folders.map(folder => {
-           const fns = {onClickNavigate: handleClick, onClickDelete:() => handleDelete(folder.name), onClickEdit: () => handleEdit(folder)};
+           const fns = {onClickNavigate: handleClick, onClickDelete: handleDelete, onClickEdit: () => handleEdit(folder)};
            return {...folder, ...fns};
          })}/> :
 

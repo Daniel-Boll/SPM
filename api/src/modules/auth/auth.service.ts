@@ -82,6 +82,10 @@ export class AuthService {
     };
   }
 
+  async logout({ user }: { user: User }) {
+    return this.userService.updateRefreshToken(user._id, null);
+  }
+
   async forwardUserServiceCall(method: string, args: any[]) {
     return await this.userService[method](...args);
   }

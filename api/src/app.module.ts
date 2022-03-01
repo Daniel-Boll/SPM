@@ -10,6 +10,9 @@ import { UserModule } from './modules/user/user.module';
 import { AccountModule } from './modules/account/account.module';
 import { FolderModule } from "./modules/folder/folder.module";
 import configuration from './configuration/config';
+import { BullModule } from '@nestjs/bull';
+import { BullMonitorModule } from './modules/bull-monitor/bull-monitor.module';
+import { QueueModule } from './modules/queue/queue.module';
 
 const configModule = ConfigModule.forRoot({
   isGlobal: true,
@@ -40,16 +43,26 @@ const tenancyModule = TenancyModule.forRootAsync({
   inject: [ConfigService, TenantsValidator],
 });
 
+const bullModule = BullModule.forRoot({
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+  },
+});
+
 @Module({
   imports: [
     configModule,
     mongooseModule,
     tenancyModule,
+    bullModule,
     TenantsModule,
     AuthModule,
     UserModule,
     AccountModule,
-    FolderModule
+    FolderModule,
+    BullMonitorModule,
+    QueueModule,
   ],
   controllers: [AppController],
 })

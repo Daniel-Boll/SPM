@@ -10,6 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 import mongoose from 'mongoose';
 import { Model } from 'mongoose';
+import { QueueService } from '../queue/queue.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { Tenant } from './entities/tenant.entity';
 
@@ -21,15 +22,18 @@ export class TenantsService {
     @InjectModel(Tenant.name)
     private readonly tenantModel: Model<Tenant>,
     private readonly configService: ConfigService,
+    private readonly queueService: QueueService,
   ) {}
 
   async create(
     createTenantDto: CreateTenantDto,
   ): Promise<Tenant & { _id: any }> {
-    let createdTenant;
+    let createdTenant: Tenant & { _id: any };
     try {
       createdTenant = await this.tenantModel.create({
-        ...createTenantDto,
+        subdomain: createTenantDto.subdomain,
+        name: createTenantDto.name,
+        ownerEmail: createTenantDto.ownerEmail,
         active: false,
       });
     } catch (err) {
@@ -59,6 +63,11 @@ export class TenantsService {
       });
 
       await mongoClient.close();
+      await this.queueService.addConfirmationMail({
+        email: createTenantDto.ownerEmail,
+        tenant: createTenantDto.subdomain,
+        callback: createTenantDto.callback,
+      });
     } catch (err) {
       this.logger.error(err);
       throw new Error('Error creating tenant');

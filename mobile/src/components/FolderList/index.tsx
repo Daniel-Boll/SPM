@@ -3,7 +3,6 @@ import { Button, Icon, List, ListItem, Divider, StyleService, useStyleSheet } fr
 import { StyleSheet } from 'react-native';
 import {useConfirm} from "react-native-confirm-dialog";
 
-
 // Interface para ambos folder e password
 // NOTE: futuramente dividir para ListItemFolder e ListItemPassword
 interface IListItem {
@@ -47,7 +46,7 @@ const ListItemRender = (props: IListItem) => {
     description={`${description}`}
     onPress={onClickNavigate}
     accessoryLeft={() => <Button onPress={onClickEdit} status="primary" accessoryLeft={EditIcon}/>}
-    accessoryRight={() => <ConfirmableButton onPress={onClickDelete} status="danger" accessoryLeft={DeleteIcon}/>}
+    accessoryRight={() => <ConfirmableButton onPress={() => onClickDelete(name)} status="danger" accessoryLeft={DeleteIcon}/>}
   />
 }
 

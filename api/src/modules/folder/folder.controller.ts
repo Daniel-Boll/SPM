@@ -26,7 +26,6 @@ export class FolderController {
   @Get(':name')
   async findOne(@Param('name') name: string) {
     const folder = await this.folderService.findOne(name);
-    console.log(folder);
     return folder;
   }
 
@@ -37,7 +36,7 @@ export class FolderController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete(':name')
+  @Delete(":name")
   async delete(@Param('name') name: string) {
     return this.folderService.remove(name);
   }

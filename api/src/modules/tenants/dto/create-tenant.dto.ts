@@ -3,4 +3,5 @@ export class CreateTenantDto {
   name: string;
   active?: boolean;
   ownerEmail: string;
+  callback: string;
 }

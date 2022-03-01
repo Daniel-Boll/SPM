@@ -29,12 +29,11 @@ const LightIcon = (props) => (
 );
 
 export const UpdateFolderScreen = ({ navigation, route }: any): JSX.Element => {
-  const {name, description: folderDescription} = route.params?.folder;
+  const {refresh, domain, folder: {name, description: folderDescription}} = route.params;
   const [description, setDescription] = useState<string>(folderDescription);
 
   const styles = useStyleSheet(themedStyles);
   const toast = useToast();
-
   const { theme: currTheme, toggleTheme } = useContextTheme();
   const theme = useTheme();
 
@@ -51,31 +50,28 @@ export const UpdateFolderScreen = ({ navigation, route }: any): JSX.Element => {
   );
 
   const onSaveButtonPress = async () => {
-    const id = toast.show("Loading...", {
-      duration: 5000,
-      onPress: (id) => toast.hide(id),
-    });
-
+    console.log(domain);
+    console.log(name);
     const response = await api({
       method: "patch",
-      resource: `folder/${name.sanitize}`,
+      resource: `folder/${name.sanitize()}`,
       data: {
         description: description.sanitize()
       },
+      scoped: {domain}
     }).catch((err) => {
       console.log(err);
       toast.update(id, "Cannot Update the Folder", { type: "danger" });
       return null;
     });
 
-    console.log(response);
-
     if (!response) return;
 
 
     toast.update(id, "Folder Updated!", { type: "success" });
 
-    navigation.navigate("Home");
+    refresh();
+    navigation.goBack();
   };
 
   return (

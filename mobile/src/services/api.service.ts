@@ -1,22 +1,6 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import Constants from "expo-constants";
 
-// NOTE: We might enhance the API "look" to something like this:
-//
-// await api.get("/users/:id", {
-//     data
-//  }, {
-//     customHeaders
-//  })
-//
-// await api.post("/users/:id", {
-//     data
-//  }, {
-//     customHeaders
-//  }).auth(domain)
-//
-//  Might look cleaner
-
 interface IApi {
   method: "get" | "post" | "put" | "delete" | "patch";
   resource: string;
@@ -46,6 +30,7 @@ export const api = async ({ method = "get", resource = "", data, scoped }: IApi)
     delete headers["Authorization"];
   }
 
+  console.log(baseUrl);
   const options = {
     get: async () => axios.get(baseUrl, { headers }),
     post: async () => axios.post(baseUrl, data, { headers }),
