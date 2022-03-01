@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 export class Tenant extends Document {
   @Prop({ required: true, unique: true })
   subdomain: string;
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   ownerEmail: string;
   @Prop({ required: true })
   name: string;

@@ -30,7 +30,6 @@ export const api = async ({ method = "get", resource = "", data, scoped }: IApi)
     delete headers["Authorization"];
   }
 
-  console.log(baseUrl);
   const options = {
     get: async () => axios.get(baseUrl, { headers }),
     post: async () => axios.post(baseUrl, data, { headers }),
