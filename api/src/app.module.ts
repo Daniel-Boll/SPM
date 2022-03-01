@@ -13,6 +13,7 @@ import configuration from './configuration/config';
 import { BullModule } from '@nestjs/bull';
 import { BullMonitorModule } from './modules/bull-monitor/bull-monitor.module';
 import { QueueModule } from './modules/queue/queue.module';
+import { PasswordModule } from './modules/password/password.module';
 
 const configModule = ConfigModule.forRoot({
   isGlobal: true,
@@ -63,6 +64,7 @@ const bullModule = BullModule.forRoot({
     FolderModule,
     BullMonitorModule,
     QueueModule,
+    PasswordModule,
   ],
   controllers: [AppController],
 })
