@@ -1,5 +1,6 @@
 interface Metadata {
   priority: number;
+  name: string;
 }
 
 export class CreatePasswordDto {

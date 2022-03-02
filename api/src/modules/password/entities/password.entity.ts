@@ -20,6 +20,10 @@ export class Password extends Document {
         type: Number,
         default: 0,
       },
+      name: {
+        type: String,
+        required: true,
+      },
     }),
   )
   metadata: Record<string, any>;

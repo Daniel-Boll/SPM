@@ -11,27 +11,29 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 import React, { useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView, TouchableWithoutFeedback, View } from "react-native";
 import { useToast } from "react-native-toast-notifications";
-import { useTheme as useContextTheme } from "../../contexts/theme.context";
-import { api } from "../../services/api.service";
+import { useTheme as useContextTheme } from "../../../contexts/theme.context";
+import { api } from "../../../services/api.service";
 
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const BackIcon = (props: any) => <Icon {...props} name="arrow-back" />;
 
-const DarkIcon = (props) => <Icon {...props} name="moon-outline" />;
+const DarkIcon = (props: any) => <Icon {...props} name="moon-outline" />;
 
-const LightIcon = (props) => <Icon {...props} name="sun-outline" />;
+const LightIcon = (props: any) => <Icon {...props} name="sun-outline" />;
 
-export const AddFolderScreen = ({ navigation, route }: any): JSX.Element => {
-  const { domain, refresh } = route.params;
-  const [name, setName] = useState<string>();
-  const [description, setDescription] = useState<string>();
+export const AddPasswordScreen = ({ navigation, route }: any): JSX.Element => {
+  const { domain, refresh, folderId } = route.params;
+  const [name, setName] = useState<string>("");
+  const [priority, setPriority] = useState<string>("0");
 
   const styles = useStyleSheet(themedStyles);
   const toast = useToast();
 
   const { theme: currTheme, toggleTheme } = useContextTheme();
-  const theme = useTheme();
+
+  const [password, setPassword] = useState<string>("");
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   const navigateBack = () => {
     navigation.goBack();
@@ -48,34 +50,48 @@ export const AddFolderScreen = ({ navigation, route }: any): JSX.Element => {
 
     const response = await api({
       method: "post",
-      resource: "folder",
+      resource: "password",
       data: {
-        name: name.sanitize(),
-        description: description.sanitize(),
+        password,
+        folder: folderId,
+        metadata: {
+          priority: parseInt(priority),
+          name,
+        },
       },
       scoped: { domain },
     }).catch((err) => {
       console.log(err);
-      toast.update(id, "Cannot add the folder", { type: "danger" });
+      toast.update(id, "Cannot add the password", { type: "danger" });
       return null;
     });
 
     if (!response) return;
 
-    toast.update(id, "Folder Added!", { type: "success" });
+    toast.update(id, "Password Added!", { type: "success" });
     refresh();
     navigation.goBack();
   };
+
+  const onPasswordIconPress = (): void => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const renderPasswordIcon = (props: any) => (
+    <TouchableWithoutFeedback onPress={onPasswordIconPress}>
+      <Icon {...props} name={passwordVisible ? "eye-off" : "eye"} />
+    </TouchableWithoutFeedback>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text category="h1" status="control">
-          Add Folder
+          Add Password
         </Text>
 
         <Text style={styles.signInLabel} category="s1" status="control">
-          Please add the folder data
+          Please add your new password
         </Text>
       </View>
 
@@ -98,10 +114,18 @@ export const AddFolderScreen = ({ navigation, route }: any): JSX.Element => {
             size="large"
           />
           <Input
-            placeholder="Description"
-            accessoryRight={<Icon name="info-outline" />}
-            value={description}
-            onChangeText={setDescription}
+            style={styles.nameInput}
+            placeholder="Password"
+            accessoryRight={renderPasswordIcon}
+            value={password}
+            secureTextEntry={!passwordVisible}
+            onChangeText={setPassword}
+          />
+          <Input
+            placeholder="Priority"
+            accessoryRight={<Icon name="folder-outline" />}
+            value={priority}
+            onChangeText={setPriority}
             style={styles.nameInput}
             size="large"
           />

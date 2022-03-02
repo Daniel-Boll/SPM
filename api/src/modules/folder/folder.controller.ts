@@ -1,4 +1,15 @@
-import { Body, Query, Param, Controller, Delete, Post, Get, Patch, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Query,
+  Param,
+  Controller,
+  Delete,
+  Post,
+  Get,
+  Patch,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
@@ -18,8 +29,7 @@ export class FolderController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
-    const foundFolders = await this.folderService.findAll();
-    return foundFolders;
+    return await this.folderService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -31,12 +41,15 @@ export class FolderController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':name')
-  async update(@Param('name') name: string, @Body() updateFolderDto: UpdateFolderDto) {
+  async update(
+    @Param('name') name: string,
+    @Body() updateFolderDto: UpdateFolderDto,
+  ) {
     return this.folderService.update(name, updateFolderDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete(":name")
+  @Delete(':name')
   async delete(@Param('name') name: string) {
     return this.folderService.remove(name);
   }

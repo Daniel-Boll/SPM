@@ -15,6 +15,7 @@ import { useToast } from "react-native-toast-notifications";
 import { FolderList } from "../../components/FolderList";
 import { useTheme as useContextTheme } from "../../contexts/theme.context";
 import { api } from "../../services/api.service";
+import * as Clipboard from "expo-clipboard";
 
 const AddIcon = (props: any) => <Icon {...props} name="plus-square-outline" />;
 
@@ -30,50 +31,41 @@ interface IFolder {
   _id: string;
 }
 
-export const HomeScreen = ({ navigation, route }: any) => {
-  const domain = route.params?.domain;
+interface IPassword {
+  password: string;
+  metadata: {
+    name: string;
+    priority: number;
+  };
+  _id: string;
+}
+
+export const PasswordsScreen = ({ navigation, route }: any) => {
+  const { domain, folder }: { domain: string; folder: IFolder } = route.params;
   const { theme: currTheme, toggleTheme } = useContextTheme();
   const toast = useToast();
   const shakeIconRef = useRef();
 
-  const [folders, setFolders] = useState<IFolder[]>([]);
+  const [passwords, setPasswords] = useState<IPassword[]>([]);
 
   const styles = useStyleSheet(themedStyles);
 
-  const handleDelete = async (folderName: string) => {
-    const id = toast.show("Deleting...");
-    const response = await api({
-      method: "delete",
-      resource: `folder/${folderName.sanitize()}`,
-      data: {
-        name: folderName.sanitize(),
-      },
-      scoped: { domain },
-    }).catch((err) => {
-      console.log(err.response.data);
-      toast.update(id, "Cannot delete folder", { type: "danger" });
-      return null;
-    });
-
-    if (!response) return;
-
-    toast.update(id, "Folder deleted", { type: "success" });
-    setFolders(folders.filter(({ name }) => name !== folderName));
-  };
-
-  const getFolders = async () => {
+  const getPasswords = async () => {
     const id = toast.show("Loading...", {
       duration: 1000,
       onPress: (id) => toast.hide(id),
     });
 
+    console.log(folder);
+    console.log(`password/${folder._id}`);
+
     const response = await api({
       method: "get",
-      resource: "folder",
+      resource: `password/${folder._id}`,
       scoped: { domain },
     }).catch((err) => {
       console.log(err.response.data);
-      toast.update(id, "Cannot get folders", { type: "danger" });
+      toast.update(id, "Cannot get passwords", { type: "danger" });
       return null;
     });
 
@@ -82,20 +74,12 @@ export const HomeScreen = ({ navigation, route }: any) => {
     return response.data;
   };
 
-  const handleEdit = (folder: IFolder) => {
-    navigation.navigate("UpdateFolder", {
-      folder,
-      domain,
-      refresh: () => getFolders().then(setFolders),
-    });
-  };
-
   const handleAdd = () => {
-    navigation.navigate("AddFolder", { domain, refresh: () => getFolders().then(setFolders) });
-  };
-
-  const handleClick = () => {
-    console.log("clicked");
+    navigation.navigate("AddPassword", {
+      domain,
+      refresh: () => getPasswords().then(setPasswords),
+      folderId: folder._id,
+    });
   };
 
   const navigateBack = () => {
@@ -113,17 +97,18 @@ export const HomeScreen = ({ navigation, route }: any) => {
   );
 
   useEffect(() => {
-    getFolders().then(setFolders);
+    getPasswords().then(setPasswords);
+    console.log(passwords);
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.title} category="h1" status="control">
-          Folders
+          {folder.name}
         </Text>
         <Text style={styles.label} category="s1" status="control">
-          Here are all your saved folders
+          Here are all your passwords from {folder.name}
         </Text>
         <Divider />
       </View>
@@ -139,17 +124,23 @@ export const HomeScreen = ({ navigation, route }: any) => {
       />
 
       <Layout style={styles.listContainer} level="1">
-        {folders && folders.length !== 0 ? (
+        {passwords?.length !== 0 ? (
           <FolderList
-            data={folders.map((folder) => {
+            data={passwords.map((password) => {
               const fns = {
                 onClickNavigate: () => {
-                  navigation.navigate("Passwords", { folder, domain });
+                  Clipboard.setString(password.password);
                 },
-                onClickDelete: handleDelete,
-                onClickEdit: () => handleEdit(folder),
+                onClickDelete: () => {},
+                onClickEdit: () => {},
               };
-              return { ...folder, ...fns };
+              return {
+                ...{
+                  name: password.metadata.name,
+                  description: "Only password",
+                },
+                ...fns,
+              };
             })}
           />
         ) : (
@@ -159,7 +150,7 @@ export const HomeScreen = ({ navigation, route }: any) => {
             style={styles.button}
             accessoryLeft={NotFoundIcon}
             onPress={() => shakeIconRef?.current.startAnimation()}>
-            No Folders Found
+            No Passwords Found
           </Button>
         )}
       </Layout>

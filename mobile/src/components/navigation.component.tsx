@@ -10,6 +10,9 @@ import { RegisterScreen } from "../screens/register";
 import { ConfirmationScreen } from "../screens/confirmation";
 import { AddFolderScreen } from "../screens/add-folder";
 import { UpdateFolderScreen } from "../screens/update-folder";
+import { PasswordsScreen } from "../screens/password";
+import { AddPasswordScreen } from "../screens/password/add-password";
+
 import * as Linking from "expo-linking";
 
 const { Navigator, Screen } = createStackNavigator();
@@ -28,6 +31,8 @@ const HomeNavigator = () => (
     <Screen name="Login" component={LoginScreen} />
     <Screen name="Register" component={RegisterScreen} />
     <Screen name="Confirmation" component={ConfirmationScreen} />
+    <Screen name="Passwords" component={PasswordsScreen} />
+    <Screen name="AddPassword" component={AddPasswordScreen} />
   </Navigator>
 );
 

@@ -15,7 +15,7 @@ const { manifest } = Constants;
 const url =
   typeof manifest?.packagerOpts === `object` && manifest?.packagerOpts.dev
     ? manifest?.debuggerHost?.split(`:`)?.shift()?.concat(`:3000`)
-    : `localhost`;
+    : `localhost:3000`;
 
 export const api = async ({ method = "get", resource = "", data, scoped }: IApi) => {
   const baseUrl = `http://${url}/${resource}`;
@@ -40,9 +40,6 @@ export const api = async ({ method = "get", resource = "", data, scoped }: IApi)
     patch: async () => axios.patch(baseUrl, data, { headers }),
     delete: async () => axios.delete(baseUrl, { headers }),
   };
-
-  console.log(`[${method}] ${baseUrl}`);
-  console.log(headers);
 
   return options[method]();
 };

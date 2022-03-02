@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreatePasswordDto } from './dto/create-password.dto';
 import { PasswordService } from './password.service';
 
@@ -14,5 +14,11 @@ export class PasswordController {
   @Get()
   async findAll() {
     return await this.passwordService.findAll();
+  }
+
+  @Get(':folder')
+  async findByFolder(@Param('folder') folder: string) {
+    console.log(folder);
+    return await this.passwordService.findByFolder(folder);
   }
 }
