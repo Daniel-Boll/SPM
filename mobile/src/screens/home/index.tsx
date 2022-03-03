@@ -13,6 +13,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import { FolderList } from "../../components/FolderList";
+import { FolderListSkeleton } from "./skeleton";
 import { useTheme as useContextTheme } from "../../contexts/theme.context";
 import { api } from "../../services/api.service";
 

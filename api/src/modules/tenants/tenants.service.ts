@@ -30,6 +30,7 @@ export class TenantsService {
     createTenantDto: CreateTenantDto,
   ): Promise<Tenant & { _id: any }> {
     let createdTenant: Tenant & { _id: any };
+    console.log(createTenantDto);
     try {
       createdTenant = await this.tenantModel.create({
         subdomain: createTenantDto.subdomain,

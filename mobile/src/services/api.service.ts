@@ -1,5 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { AxiosRequestHeaders } from "axios";
-import Constants from "expo-constants";
 
 interface IApi {
   method: "get" | "post" | "put" | "delete" | "patch";
@@ -10,15 +10,12 @@ interface IApi {
   };
 }
 
-const { manifest } = Constants;
-
-const url =
-  typeof manifest?.packagerOpts === `object` && manifest?.packagerOpts.dev
-    ? manifest?.debuggerHost?.split(`:`)?.shift()?.concat(`:3000`)
-    : `localhost:3000`;
-
 export const api = async ({ method = "get", resource = "", data, scoped }: IApi) => {
-  const baseUrl = `http://${url}/${resource}`;
+  const url = (await AsyncStorage.getItem("apiUrl")) || "";
+  const isHttp = url.includes("http");
+  const baseUrl = `${isHttp ? "" : "http://"}${url}/${resource}`;
+
+  console.log(baseUrl);
 
   const headers: AxiosRequestHeaders = {
     "Content-Type": "application/json",

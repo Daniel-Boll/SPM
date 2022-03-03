@@ -1,8 +1,6 @@
-import { ApplicationProvider } from "@ui-kitten/components";
-import React, { FunctionComponent } from "react";
-import { useState } from "react";
-import { createContext } from "react";
 import * as eva from "@eva-design/eva";
+import { ApplicationProvider } from "@ui-kitten/components";
+import React, { createContext, FunctionComponent, useState } from "react";
 
 interface IThemeContext {
   theme: string;
@@ -28,7 +26,7 @@ export const ThemeProvider: FunctionComponent = ({ children }) => {
   );
 };
 
-export const useTheme = (): IThemeContext => {
+export const useTheme = (): Partial<IThemeContext> => {
   const { theme, toggleTheme } = React.useContext(ThemeContext);
 
   return { theme, toggleTheme };

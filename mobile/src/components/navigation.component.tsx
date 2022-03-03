@@ -12,6 +12,7 @@ import { AddFolderScreen } from "../screens/add-folder";
 import { UpdateFolderScreen } from "../screens/update-folder";
 import { PasswordsScreen } from "../screens/password";
 import { AddPasswordScreen } from "../screens/password/add-password";
+import { SetApiScreen } from "../screens/set-api";
 
 import * as Linking from "expo-linking";
 
@@ -19,7 +20,7 @@ const { Navigator, Screen } = createStackNavigator();
 
 const HomeNavigator = () => (
   <Navigator
-    initialRouteName="Sandbox"
+    initialRouteName="ApiURL"
     screenOptions={{
       headerShown: false,
     }}>
@@ -33,6 +34,7 @@ const HomeNavigator = () => (
     <Screen name="Confirmation" component={ConfirmationScreen} />
     <Screen name="Passwords" component={PasswordsScreen} />
     <Screen name="AddPassword" component={AddPasswordScreen} />
+    <Screen name="ApiURL" component={SetApiScreen} />
   </Navigator>
 );
 
